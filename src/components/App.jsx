@@ -11,6 +11,7 @@ export class App extends Component {
   state = {
     users,
     isListShown: false,
+    userToUpdate: {},
   };
 
   clickHandler = () => {
@@ -50,15 +51,32 @@ export class App extends Component {
     }))
   }
 
-  
+  showUpdateForm = (id) => {
+    const userToUpdate = this.state.users.find(user => user.id === id)
+    
+    this.setState({
+      userToUpdate
+    })
+  }
+
+  updateUser = (user) => {
+    const userIndex = this.state.users.findIndex(u => u.id === user.id)
+    const arrUsersToChange = [...this.state.users];
+    arrUsersToChange.splice(userIndex, 1, user);
+    this.setState({
+      users: arrUsersToChange,
+      userToUpdate: {}
+    })
+  }
+
   render() {
-    const { users, isListShown } = this.state;
+    const { users, isListShown, userToUpdate } = this.state;
     return (
       <>
         
         {isListShown ? (<>
           <AddUserForm addUser={this.addUser} />
-          <UsersList users={users} userDelete={this.userDelete} changeJobStatus={this.changeJobStatus} />
+          <UsersList updateUser={ this.updateUser} userToUpdate={userToUpdate} showUpdateForm={ this.showUpdateForm} users={users} userDelete={this.userDelete} changeJobStatus={this.changeJobStatus} />
         </>) : (
           <Button
             type="button"
